@@ -39,10 +39,23 @@ import {
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
+import mysql from 'mysql';
+
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
   const classes = useStyles();
+  
+  const conn = mysql.createConnection({
+    host: "10.7.229.35",
+    user: "root",
+    password: "123",
+    database: "openiot"
+  });
+  conn.connect(function(err) {
+    (err) ? console.log(err) : console.log(conn);
+  });
+
   return (
     <div>
       <GridContainer>
