@@ -5,14 +5,8 @@ import ChartistGraph from "react-chartist";
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Store from "@material-ui/icons/Store";
-import Warning from "@material-ui/icons/Warning";
-import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
-import Update from "@material-ui/icons/Update";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
-import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
 import Cloud from "@material-ui/icons/Cloud";
@@ -22,7 +16,6 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Table from "components/Table/Table.js";
 import Tasks from "components/Tasks/Tasks.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
-import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
@@ -38,15 +31,89 @@ import {
 } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-
-import mysql from 'mysql';
+import Chart from "react-google-charts";
+import axios from 'axios';
+import { CardContent } from "@material-ui/core";
+//import mysql from 'mysql';
 
 const useStyles = makeStyles(styles);
 
+const options1 = {
+  width: 100, height: 100,
+  min: 0, max: 300,
+  redFrom: 0, redTo: 150,
+  yellowFrom:150, yellowTo: 175,
+  greenFrom: 175, greenTo: 250,
+  minorTicks: 5
+};
+const options2 = {
+  width: 100, height: 100,
+  min: 0, max: 45000,
+  greenFrom: 0, greenTo: 40000,
+  yellowFrom: 40000, yellowTo: 42500,
+  redFrom: 42500, redTo: 45000,
+  minorTicks: 5
+};
+const options3 = {
+  width: 100, height: 100,
+  min: 0, max: 150,
+  greenFrom: 0, greenTo: 140,
+  yellowFrom: 140, yellowTo: 145,
+  redFrom: 145, redTo: 150,
+  minorTicks: 5
+};
+
+const headers={"fiware-service": "openiot", "fiware-servicepath": "/"};
+var corrente, tensao, potencia;
+var entityID = 'IoTSmartReginaLabDC';
+
+async function getData() {
+  try {
+    const response = await axios({
+      "method": "get",
+      "url": "http://10.7.229.35:1026/v2/entities/"+entityID,
+      "headers": headers
+    });
+    tensao = response.data.Tensao_V.value;
+    potencia = response.data.Pot_Ativa_W.value;
+    corrente = response.data.Corrente_A.value;
+    
+    console.log("Tensao: "+tensao+"\nPotencia: "+potencia+"\nCorrente: "+corrente);
+  }
+  catch(error) {
+    console.log(error);
+  }
+}
+
+var getTensao = () => {
+  return [
+    ["Label", "Value"],
+    ["Tensão", tensao]
+  ];
+};
+
+var getPotencia = () => {
+  return [
+    ["Label", "Value"],
+    ["Potência", potencia]
+  ];
+}
+
+var getCorrente = () => {
+  return [
+    ["Label", "Value"],
+    ["Corrente", corrente]
+  ];
+}
+
+/*function drawGauges() {
+ 
+}*/
+
 export default function Dashboard() {
   const classes = useStyles();
-  
-  const conn = mysql.createConnection({
+  getData();
+  /*const conn = mysql.createConnection({
     host: "10.7.229.35",
     user: "root",
     password: "123",
@@ -54,81 +121,61 @@ export default function Dashboard() {
   });
   conn.connect(function(err) {
     (err) ? console.log(err) : console.log(conn);
-  });
+  });*/
 
   return (
     <div>
       <GridContainer>
-        <GridItem xs={12} sm={6} md={3}>
+        <GridItem xs={12} sm={6} md={4}>
           <Card>
-            <CardHeader color="warning" stats icon>
-              <CardIcon color="warning">
-                <Icon>content_copy</Icon>
-              </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
-              <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
-              </h3>
-            </CardHeader>
+            <CardBody>
+              <Chart
+                chartType="Gauge"
+                width="100%"
+                height="100px"
+                data={getTensao()}
+                options={options1}
+                />
+            </CardBody>
+            <CardFooter stats>
+            <div className={classes.stats}>
+              <h5>Tensão</h5>
+            </div>
+            </CardFooter>
+          </Card>
+        </GridItem>
+        <GridItem xs={12} sm={6} md={4}>
+          <Card>
+            <CardBody>
+              <Chart
+                chartType="Gauge"
+                width="100%"
+                height="100px"
+                data={getPotencia()}
+                options={options2}>
+              </Chart>
+            </CardBody>
             <CardFooter stats>
               <div className={classes.stats}>
-                <Danger>
-                  <Warning />
-                </Danger>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  Get more space
-                </a>
+                <h5>Potência</h5>
               </div>
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
+        <GridItem xs={12} sm={6} md={4}>
           <Card>
-            <CardHeader color="success" stats icon>
-              <CardIcon color="success">
-                <Store />
-              </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
-            </CardHeader>
+            <CardBody>
+              <Chart
+                chartType="Gauge"
+                width="100%"
+                height="100px"
+                data={getCorrente()}
+                options={options3}>
+              </Chart>
+            </CardBody>
             <CardFooter stats>
               <div className={classes.stats}>
-                <DateRange />
-                Last 24 Hours
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="danger" stats icon>
-              <CardIcon color="danger">
-                <Icon>info_outline</Icon>
-              </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <LocalOffer />
-                Tracked from Github
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="info" stats icon>
-              <CardIcon color="info">
-                <Accessibility />
-              </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <Update />
-                Just Updated
+                <h5>Corrente</h5>
               </div>
             </CardFooter>
           </Card>
