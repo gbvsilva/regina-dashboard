@@ -3,7 +3,7 @@ import React from "react";
 import ChartistGraph from "react-chartist";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
-import Icon from "@material-ui/core/Icon";
+//import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
@@ -18,7 +18,7 @@ import Tasks from "components/Tasks/Tasks.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
+//import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
@@ -33,7 +33,7 @@ import {
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import Chart from "react-google-charts";
 import axios from 'axios';
-import { CardContent } from "@material-ui/core";
+//import { CardContent } from "@material-ui/core";
 //import mysql from 'mysql';
 
 const useStyles = makeStyles(styles);
@@ -67,7 +67,7 @@ const headers={"fiware-service": "openiot", "fiware-servicepath": "/"};
 var corrente, tensao, potencia;
 var entityID = 'IoTSmartReginaLabDC';
 
-async function getData() {
+export async function getData() {
   try {
     const response = await axios({
       "method": "get",

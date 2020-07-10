@@ -44,7 +44,7 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: DashboardPage,
     layout: "/admin"
-  },
+  }/*,
   {
     path: "/user",
     name: "User Profile",
@@ -76,7 +76,7 @@ const dashboardRoutes = [
     icon: BubbleChart,
     component: Icons,
     layout: "/admin"
-  },
+  }*/,
   {
     path: "/maps",
     name: "Maps",
@@ -84,7 +84,7 @@ const dashboardRoutes = [
     icon: LocationOn,
     component: Maps,
     layout: "/admin"
-  },
+  }/*,
   {
     path: "/notifications",
     name: "Notifications",
@@ -108,7 +108,7 @@ const dashboardRoutes = [
     icon: Unarchive,
     component: UpgradeToPro,
     layout: "/admin"
-  }
+  }*/
 ];
 
 export default dashboardRoutes;
